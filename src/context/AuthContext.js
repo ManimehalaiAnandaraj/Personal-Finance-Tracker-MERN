@@ -1,39 +1,32 @@
-import React, { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
-const AuthContext = createContext();
+export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
-  // Load user from localStorage on app start
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) setUser(JSON.parse(storedUser));
+    const token = localStorage.getItem("token");
+    if (token) setUser({ token });
   }, []);
 
-  // Login function
-  const login = (userData) => {
-    setUser(userData);
-    localStorage.setItem("user", JSON.stringify(userData));
+  const login = (token) => {
+    localStorage.setItem("token", token);
+    setUser({ token });
+    navigate("/dashboard");
   };
 
-  // Logout function
   const logout = () => {
+    localStorage.removeItem("token");
     setUser(null);
-    localStorage.removeItem("user");
-  };
-
-  // (Optional) Register function for demo
-  const register = (userData) => {
-    // Normally you’d call backend API here
-    login(userData);
+    navigate("/");
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, register }}>
+    <AuthContext.Provider value={{ user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
-
-export default AuthContext;

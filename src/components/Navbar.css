@@ -1,0 +1,29 @@
+/* src/components/Navbar.css */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #1e293b;
+  color: white;
+}
+
+.navbar a {
+  color: white;
+  margin-right: 1rem;
+  text-decoration: none;
+}
+
+.navbar button {
+  background-color: #f97316;
+  color: white;
+  border: none;
+  padding: 0.4rem 1rem;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.user-name {
+  margin-right: 1rem;
+  font-weight: 500;
+}

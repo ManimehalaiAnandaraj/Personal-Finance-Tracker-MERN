@@ -1,15 +1,23 @@
-import axios from 'axios';
+// src/services/api.js
+import axios from "axios";
 
+// Use environment variable for backend URL
+const API_URL = process.env.REACT_APP_API_URL;
 
-const api = axios.create({ baseURL: process.env.REACT_APP_API_URL });
-
-
-// Attach token automatically
-api.interceptors.request.use((config) => {
-const token = localStorage.getItem('pft_token');
-if (token) config.headers.Authorization = `Bearer ${token}`;
-return config;
+const API = axios.create({
+  baseURL: API_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
+// Automatically attach JWT token if it exists
+API.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token"); // or wherever you store your JWT
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
-export default api;
+export default API;

@@ -1,38 +1,87 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.navbar {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  padding: 1rem 2rem;
+  background-color: #1e293b;
+  color: white;
+}
+.navbar a {
+  color: white;
+  margin-right: 1rem;
+  text-decoration: none;
+}
+.navbar button {
+  background-color: #f97316;
+  color: white;
+  border: none;
+  padding: 0.4rem 1rem;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.auth-container {
+  max-width: 400px;
+  margin: 5rem auto;
+  padding: 2rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+}
+.auth-container input {
+  width: 100%;
+  padding: 0.6rem;
+  margin: 0.5rem 0;
+  border-radius: 5px;
+  border: 1px solid #cbd5e1;
+}
+.auth-container button {
+  width: 100%;
+  padding: 0.6rem;
+  background-color: #f97316;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.transactions-container {
+  max-width: 800px;
+  margin: 2rem auto;
+}
+.transactions-container form {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.transactions-container input, select {
+  padding: 0.5rem;
+}
+.transactions-container table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.transactions-container th, td {
+  border: 1px solid #cbd5e1;
+  padding: 0.5rem;
+  text-align: left;
+}
+.transactions-container button {
+  padding: 0.4rem 0.8rem;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  margin-right: 0.3rem;
+  font-weight: 500;
+}
+
+/* Delete button: red */
+.transactions-container button.delete-btn {
+  background-color: #dc2626;
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* Edit button: blue */
+.transactions-container button.edit-btn {
+  background-color: #2563eb;
+  color: white;
 }

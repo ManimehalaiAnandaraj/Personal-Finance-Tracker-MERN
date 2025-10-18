@@ -1,32 +1,49 @@
 import React, { useState } from "react";
+import API from "../services/api";
 
-const TransactionForm = ({ transactions, setTransactions }) => {
-  const [type, setType] = useState("Income");
-  const [category, setCategory] = useState("");
-  const [amount, setAmount] = useState("");
-  const [description, setDescription] = useState("");
+const TransactionForm = ({ onAdd }) => {
+  const [form, setForm] = useState({ title: "", amount: "", type: "expense" });
 
-  const handleSubmit = (e) => {
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const newTransaction = { type, category, amount: parseFloat(amount), description, date: new Date() };
-    setTransactions([newTransaction, ...transactions]);
-    // Reset form
-    setType("Income");
-    setCategory("");
-    setAmount("");
-    setDescription("");
+    await API.post("/transactions", form);
+    setForm({ title: "", amount: "", type: "expense" });
+    onAdd();
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "10px", margin: "20px 0" }}>
-      <select value={type} onChange={(e) => setType(e.target.value)}>
-        <option value="Income">Income</option>
-        <option value="Expense">Expense</option>
+    <form onSubmit={handleSubmit} className="flex gap-2 mb-4">
+      <input
+        type="text"
+        name="title"
+        placeholder="Title"
+        value={form.title}
+        onChange={handleChange}
+        className="border p-2 flex-1"
+        required
+      />
+      <input
+        type="number"
+        name="amount"
+        placeholder="Amount"
+        value={form.amount}
+        onChange={handleChange}
+        className="border p-2 w-32"
+        required
+      />
+      <select
+        name="type"
+        value={form.type}
+        onChange={handleChange}
+        className="border p-2"
+      >
+        <option value="expense">Expense</option>
+        <option value="income">Income</option>
       </select>
-      <input type="text" placeholder="Category" value={category} onChange={(e) => setCategory(e.target.value)} required />
-      <input type="number" placeholder="Amount" value={amount} onChange={(e) => setAmount(e.target.value)} required />
-      <input type="text" placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} />
-      <button type="submit">Add Transaction</button>
+      <button className="bg-blue-500 text-white px-4 rounded">Add</button>
     </form>
   );
 };
