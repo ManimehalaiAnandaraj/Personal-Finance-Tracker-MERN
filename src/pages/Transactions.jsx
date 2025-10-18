@@ -17,14 +17,16 @@ const Transactions = ({ onDataChange }) => {
     try {
       const { data } = await API.get("/transactions");
       setTransactions(data);
-      if (onDataChange) onDataChange(data);
+      if (typeof onDataChange === "function") onDataChange(data);
     } catch (error) {
       console.error(error);
       alert("Failed to fetch transactions");
     }
   };
 
-  useEffect(() => fetchTransactions(), []);
+  useEffect(() => {
+    fetchTransactions();
+  }, []);
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -33,7 +35,7 @@ const Transactions = ({ onDataChange }) => {
     e.preventDefault();
     try {
       if (editId) {
-        await API.put(`/transactions/${editId}`, form);
+        await API.put(`/transactions`, { ...form, id: editId });
         setEditId(null);
       } else {
         await API.post("/transactions", form);
@@ -50,10 +52,10 @@ const Transactions = ({ onDataChange }) => {
     if (!window.confirm("Are you sure you want to delete this transaction?"))
       return;
     try {
-      await API.delete(`/transactions/${id}`);
-      const updated = transactions.filter((t) => t._id !== id);
-      setTransactions(updated);
-      if (onDataChange) onDataChange(updated);
+      await API.delete(`/transactions?id=${id}`);
+      const newData = transactions.filter((t) => t._id !== id);
+      setTransactions(newData);
+      if (typeof onDataChange === "function") onDataChange(newData);
     } catch (error) {
       console.error(error);
       alert("Failed to delete transaction");
@@ -69,21 +71,6 @@ const Transactions = ({ onDataChange }) => {
       description: t.description || "",
     });
     window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  const exportCSV = () => {
-    let csv = "Type,Amount,Category,Description,Date\n";
-    transactions.forEach((t) => {
-      csv += `${t.type},${t.amount},${t.category},${t.description || ""},${new Date(
-        t.date
-      ).toLocaleDateString()}\n`;
-    });
-    const blob = new Blob([csv], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "transactions.csv";
-    a.click();
   };
 
   return (
@@ -120,7 +107,23 @@ const Transactions = ({ onDataChange }) => {
           <button type="submit">{editId ? "Update" : "Add"}</button>
         </form>
 
-        <button className="export-btn" onClick={exportCSV}>
+        <button
+          className="export-btn"
+          onClick={() => {
+            let csv = "Type,Amount,Category,Description,Date\n";
+            transactions.forEach((t) => {
+              csv += `${t.type},${t.amount},${t.category},${t.description || ""},${new Date(
+                t.date
+              ).toLocaleDateString()}\n`;
+            });
+            const blob = new Blob([csv], { type: "text/csv" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "transactions.csv";
+            a.click();
+          }}
+        >
           Export CSV
         </button>
 
