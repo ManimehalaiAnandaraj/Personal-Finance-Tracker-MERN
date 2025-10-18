@@ -4,6 +4,11 @@ import DashboardPage from "./pages/DashboardPage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import PrivateRoute from "./components/PrivateRoute";
+// App.jsx
+import './styles/App.css';
+
+
+
 
 function App() {
   return (

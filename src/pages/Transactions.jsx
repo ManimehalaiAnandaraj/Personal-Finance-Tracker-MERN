@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import API from "../services/api";
 import Navbar from "../components/Navbar";
-import "./Transactions.css";
+import '../styles/Transactions.css';
 
 const Transactions = ({ onDataChange }) => {
   const [transactions, setTransactions] = useState([]);

@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import API from "../services/api";
-import "./Auth.css";
+import '../styles/Auth.css';
 
 const Login = () => {
   const [form, setForm] = useState({ email: "", password: "" });
