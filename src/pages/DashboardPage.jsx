@@ -1,4 +1,3 @@
-// src/pages/DashboardPage.jsx
 import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import DashboardCards from "../components/DashboardCards";
@@ -11,12 +10,6 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 const DashboardPage = () => {
   const [transactions, setTransactions] = useState([]);
 
-  // Update transactions state when Transactions component changes
-  const handleDataChange = (data) => {
-    setTransactions(data);
-  };
-
-  // Prepare chart data
   const chartData = {
     labels: ["Income", "Expense"],
     datasets: [
@@ -34,20 +27,13 @@ const DashboardPage = () => {
   return (
     <div>
       <Navbar />
-      <div className="max-w-5xl mx-auto p-4">
-        <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
-
-        {/* Cards */}
+      <div className="dashboard-container">
         <DashboardCards transactions={transactions} />
-
-        {/* Bar Chart */}
-        <div className="bg-white p-4 rounded shadow mb-6">
-          <h2 className="text-xl font-bold mb-2">Spending Overview</h2>
+        <div style={{ maxWidth: "600px", margin: "2rem auto" }}>
+          <h2>Spending Overview</h2>
           <Bar data={chartData} />
         </div>
-
-        {/* Transactions Table */}
-        <Transactions onDataChange={handleDataChange} />
+        <Transactions onDataChange={setTransactions} />
       </div>
     </div>
   );
