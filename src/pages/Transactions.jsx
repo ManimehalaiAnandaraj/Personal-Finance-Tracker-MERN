@@ -2,9 +2,9 @@
 import React, { useEffect, useState } from "react";
 import API from "../services/api";
 import Navbar from "../components/Navbar";
-import "./Transactions.css"; // CSS file for styling
+import "./Transactions.css";
 
-const Transactions = () => {
+const Transactions = ({ onDataChange }) => {
   const [transactions, setTransactions] = useState([]);
   const [form, setForm] = useState({
     type: "income",
@@ -14,11 +14,11 @@ const Transactions = () => {
   });
   const [editId, setEditId] = useState(null);
 
-  // Fetch transactions from backend
   const fetchTransactions = async () => {
     try {
       const { data } = await API.get("/transactions");
       setTransactions(data);
+      if (typeof onDataChange === "function") onDataChange(data);
     } catch (error) {
       console.error(error);
       alert("Failed to fetch transactions");
@@ -29,42 +29,60 @@ const Transactions = () => {
     fetchTransactions();
   }, []);
 
-  // Handle form input changes
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
-  // Add or update transaction
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       if (editId) {
-        await API.put(`/transactions/${editId}`, form);
+        const { data: updatedTransaction } = await API.put(
+          `/transactions/${editId}`,
+          form
+        );
+
+        // Update transactions locally
+        const updatedTransactions = transactions.map((t) =>
+          t._id === editId ? updatedTransaction : t
+        );
+        setTransactions(updatedTransactions);
+        if (typeof onDataChange === "function")
+          onDataChange(updatedTransactions);
+
         setEditId(null);
       } else {
-        await API.post("/transactions", form);
+        const { data: newTransaction } = await API.post("/transactions", form);
+
+        // Add the new transaction locally
+        const updatedTransactions = [newTransaction, ...transactions];
+        setTransactions(updatedTransactions);
+        if (typeof onDataChange === "function")
+          onDataChange(updatedTransactions);
       }
+
       setForm({ type: "income", amount: "", category: "", description: "" });
-      fetchTransactions();
     } catch (error) {
       console.error(error);
       alert("Failed to save transaction");
     }
   };
 
-  // Delete transaction
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this transaction?"))
       return;
+
     try {
       await API.delete(`/transactions/${id}`);
-      fetchTransactions();
+
+      const updatedTransactions = transactions.filter((t) => t._id !== id);
+      setTransactions(updatedTransactions);
+      if (typeof onDataChange === "function") onDataChange(updatedTransactions);
     } catch (error) {
       console.error(error);
       alert("Failed to delete transaction");
     }
   };
 
-  // Edit transaction
   const handleEdit = (t) => {
     setEditId(t._id);
     setForm({
@@ -76,7 +94,6 @@ const Transactions = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // Export CSV
   const exportCSV = () => {
     let csv = "Type,Amount,Category,Description,Date\n";
     transactions.forEach((t) => {

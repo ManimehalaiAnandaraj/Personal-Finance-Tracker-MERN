@@ -1,8 +1,7 @@
-// src/services/api.js
 import axios from "axios";
 
-// Use environment variable for backend URL
-const API_URL = process.env.REACT_APP_API_URL;
+// Use environment variable or fallback to localhost
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000/api";
 
 const API = axios.create({
   baseURL: API_URL,
@@ -13,7 +12,7 @@ const API = axios.create({
 
 // Automatically attach JWT token if it exists
 API.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token"); // or wherever you store your JWT
+  const token = localStorage.getItem("token");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
